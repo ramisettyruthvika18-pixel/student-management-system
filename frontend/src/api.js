@@ -1,7 +1,17 @@
 import axios from "axios";
 
+const getBaseUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  const fallbackUrl = import.meta.env.PROD
+    ? "https://student-management-system-1ct1.onrender.com/api"
+    : "http://localhost:8080/api";
+  const rawUrl = envUrl && envUrl.trim() ? envUrl.trim() : fallbackUrl;
+  const cleanUrl = rawUrl.replace(/\/+$/, "");
+  return cleanUrl.endsWith("/api") ? cleanUrl : `${cleanUrl}/api`;
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080/api",
+  baseURL: getBaseUrl(),
 });
 
 // Attach the JWT to every request
@@ -15,7 +25,7 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (res) => res,
   (err) => {
-    const isAuthCall = err.config?.url?.startsWith("/auth/");
+    const isAuthCall = err.config?.url?.includes("/auth/");
     if (err.response?.status === 401 && !isAuthCall) {
       localStorage.removeItem("sms_token");
       localStorage.removeItem("sms_user");
@@ -28,7 +38,11 @@ api.interceptors.response.use(
 /** Pull a readable message out of an axios error. */
 export function errorMessage(err, fallback = "Something went wrong. Please try again.") {
   if (err.response?.data?.message) return err.response.data.message;
-  if (err.code === "ERR_NETWORK") return "Cannot reach the server. Is the Spring Boot backend running on port 8080?";
+  if (err.code === "ERR_NETWORK") {
+    return import.meta.env.PROD
+      ? "Cannot reach the server. The Render backend may be spinning up (Render free tier can take up to a minute) or CORS is blocking the request."
+      : "Cannot reach the server. Is the Spring Boot backend running on port 8080?";
+  }
   return fallback;
 }
 

@@ -85,7 +85,7 @@ export default function Login() {
           </p>
 
           {mode === "login" && (
-            <p className="hint">Demo admin: <code>admin</code> / <code>admin123</code></p>
+            <p className="hint">Demo admin: <code>admin</code> / <code>admin321</code></p>
           )}
         </form>
       </section>

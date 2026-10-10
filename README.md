@@ -39,7 +39,7 @@ cd backend
 mvn spring-boot:run
 ```
 Runs on http://localhost:8080. On first start it seeds:
-- Admin account: **admin / admin123**
+- Admin account: **admin / admin321**
 - 10 sample students (so the dashboard has data)
 
 ## 3. Frontend
@@ -48,10 +48,10 @@ cd frontend
 npm install
 npm run dev
 ```
-Open http://localhost:5173 and sign in with `admin` / `admin123`.
+Open http://localhost:5173 and sign in with `admin` / `admin321`.
 
-If the backend runs elsewhere, change `VITE_API_URL` in `frontend/.env`
-(and `app.cors.allowed-origin` in the backend if the frontend origin changes).
+If the backend runs elsewhere, set `VITE_API_URL` in `frontend/.env` (or environment variables)
+(and set `CORS_ORIGIN` on the backend if needed).
 
 ## REST API
 | Method | Endpoint | Access | Purpose |
